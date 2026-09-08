@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {sceneHTML,example,STYLE_IDS,PALETTE_IDS,LAYOUT_IDS,validateScene,portraitRect} from '../assets/studio.mjs';
 test('36 standard combinations render actual scene objects',()=>{
   for(const style_id of STYLE_IDS)for(const palette_id of PALETTE_IDS)for(const layout of LAYOUT_IDS){
@@ -23,5 +24,8 @@ test('two-line captions retain spoken words and semantic highlight',()=>{
   const html=sceneHTML({...example,caption_lines:['把知识打包','变成 AI Skill']},3);assert.equal((html.match(/caption-line check-text/g)||[]).length,2);assert.ok(html.includes('<em>AI Skill</em>'));
 });
 test('video portrait positions match the three distinct masters',()=>{
+  const adapter=fs.readFileSync(new URL('../assets/studio-remotion.tsx',import.meta.url),'utf8');
+  assert.ok(adapter.includes('export const StudioRoot='));
+  assert.ok(!adapter.includes('registerRoot'),'Reusable component must not register a second root on import');
   assert.equal(portraitRect('tactile').width,198);assert.equal(portraitRect('editorial').width,265);assert.equal(portraitRect('precision').width,165);
 });

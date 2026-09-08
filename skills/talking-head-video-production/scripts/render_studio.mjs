@@ -41,7 +41,8 @@ const job=fs.mkdtempSync(path.join(os.tmpdir(),'talking-head-render-'));
 for(const name of ['studio.mjs','studio.css','studio-remotion.tsx'])fs.copyFileSync(path.join(base,'../assets',name),path.join(job,name));
 fs.symlinkSync(path.join(runtime,'node_modules'),path.join(job,'node_modules'),process.platform==='win32'?'junction':'dir');
 process.chdir(job); // Keep Remotion build caches out of the installed Skill directory.
-const serveUrl=await bundle({entryPoint:path.join(job,'studio-remotion.tsx')});
+fs.writeFileSync(path.join(job,'entry.tsx'),"import {registerRoot} from 'remotion'; import {StudioRoot} from './studio-remotion'; registerRoot(StudioRoot);\n",{flag:'wx'});
+const serveUrl=await bundle({entryPoint:path.join(job,'entry.tsx')});
 const browserOptions={browserExecutable:path.resolve(flags['--browser']),onBrowserDownload:()=>{throw Error('Browser download not authorized')}};
 const composition=await selectComposition({serveUrl,id:'StandardScene',inputProps:props,...browserOptions});
 const frame=flags['--frame']===undefined?90:Number(flags['--frame']);
