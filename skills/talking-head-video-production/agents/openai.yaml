@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI 口播精剪工作流"
+  short_description: "从原始口播到完整成片：能力预检、内容粗剪、三套风格与逐步视觉验收"
+  default_prompt: "使用 $talking-head-video-production 处理我提供的口播原片：先检查工具与多模态能力，整理内容并粗剪，再展示三套风格供我选择，确认动态样片后制作成片。"
