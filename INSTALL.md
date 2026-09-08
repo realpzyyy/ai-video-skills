@@ -1,6 +1,8 @@
 # 在其他 Agent 中安装、更新和使用
 
-适用版本：`talking-head-video-production 2.0.0`。
+适用版本：`talking-head-video-production 2.1.0`。
+
+本版新增实际视觉母版：磨砂工具箱、纸白知识杂志、精密流程科技 × 奶油杏橙、晴空钴蓝、香芋青柠。更新后务必保留 assets 内的 CSS、MJS、TSX 和离线 catalog.html，不是只替换 SKILL.md。详情见 [标准模板](skills/talking-head-video-production/references/standard-templates.md)。
 
 这是流程 Skill，不是独立剪辑软件、自动配好的插件包或一键云服务。换一个 Agent 后，仍需重新确认文件访问、执行工具、转写、看图、听音和视频渲染能力。
 
@@ -57,7 +59,7 @@ https://github.com/realpzyyy/ai-video-skills/tree/main/skills/talking-head-video
 1. 提取带时间码的逐字稿，梳理逻辑，精简重复、口误和无意义口水词，保留原意与自然起音。
 2. 先输出完整精简音频和简短删改摘要，暂停让我试听确认。
 3. 我确认后，建立与音频同源的视频时间线，不单独导出粗剪 MP4。
-4. 按内容展示 3 种视觉风格，每种 3 种配色的真实合成样张，编号 A1–C3，暂停让我选择完整组合。
+4. 使用包内三套实际母版与三配色，按本次内容/真人生成九格，编号 A1–C3，暂停让我选择完整组合。不要自行改成简单文字卡片，不要先出成片再问风格；渲染前检查 G1/G2。
 5. 我选定后，制作字幕、B-roll 与贴纸动效，内部检查后直接烧制最终视频；不做封面，不额外增加默认样片审批。
 
 保留原声和原片，不自动改声线、加配音、数字人或音乐。
@@ -77,20 +79,25 @@ talking-head-video-production/
   agents/openai.yaml
   references/
   scripts/
-  assets/style-presets.json
+  assets/
+    style-presets.json
+    catalog.html
+    studio.css
+    studio.mjs
+    studio-remotion.tsx
 ```
 
 也可以使用授课者提供的仅含公开 Skill 与说明文件的离线包。无需学员能访问 GitHub即可读取本地包，但转写/图片/渲染后端是否能离线运行，要另外确认。不要临时绕过网络限制或改用未核实的第三方镜像。
 
 ## 5. 安装验收与能力清单
 
-- 读取实际安装的 `SKILL.md`：本版 `metadata.version` 为 `2.0.0`，默认确认点为 G1 音频、G2 风格配色。
+- 读取实际安装的 `SKILL.md`：本版 `metadata.version` 为 `2.1.0`，默认确认点为 G1 音频、G2 风格配色。
 - 四个配套目录齐全；不是只把 README 或 SKILL.md 放进聊天上下文。
-- 在 Skill 目录运行 `python3 -B -m unittest discover -s scripts -p 'test_*.py'`，本版应运行 24 项测试。Windows 使用本机可用的 Python 3 命令。
-- 本地辅助脚本使用 Python 3 标准库。`probe_local.py --media` 需要 `ffprobe`，提取音频通常需要 `ffmpeg` 或同等工具；真实视频合成还需已验证的渲染后端。
+- 在 Skill 目录运行 `python3 -B -m unittest discover -s scripts -p 'test_*.py'`（36项）与 `node --test scripts/test_studio.mjs`（7项）。Windows 使用本机可用的 Python 3 命令。
+- 检测/音频/批准脚本使用 Python 3 标准库；重新生成九格另需 Node.js。`probe_local.py --media` 需要 `ffprobe`，提取音频通常需要 `ffmpeg`；场景渲染另需已安装的 Remotion/React 依赖与 Chrome，可移植到已验证的其他后端。
 - ASR/强制对齐、图片生成或 HTML/SVG 渲染、听音/看图能力独立检查。能写代码不代表能看懂或听懂产物。
-- 内置音频切段工具不会自动决定删哪些字；内置九格 HTML 不是动态 B-roll 或最终 MP4。
+- 内置音频工具不会自动决定删哪些字；九格 HTML 可预览实际对象动画，但不是 MP4。场景渲染工具产出场景资产，完整视频仍需同源时间线、字幕与批准音频合成。
 - 缺乏图片生成时可以选择已验证的代码绘图路径；缺乏视觉理解时仍需人工视觉确认，不能用 HTML 绕过验收。
-- 24 项测试通过只证明辅助脚本行为，不证明某客户端完整兼容或一分钟视频可在十分钟内完成。
+- 43 项测试通过只证明辅助脚本行为，不证明某客户端完整兼容、所有 Agent 不会绕过确认，或一分钟视频可在十分钟内完成。
 
 维护、版权和许可边界见 [README](README.md)。Skill 不会自动更新已经完成的视频，也不会让另一台机器同步获得本机的插件、字体、模型或账户权限。
