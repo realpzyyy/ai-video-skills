@@ -1,17 +1,19 @@
 # AI 口播精剪工作流
 
-把一条真人口播原片，按「内容剪辑 → 风格确认 → 视觉包装 → 成片验收」的流程制作成完整视频。
+把一条真人口播原片，按「逐字稿与精简 → 音频试听确认 → 3×3 风格配色确认 → 最终成片」的流程制作成完整视频。
 
 这是一套供 AI 助手执行的 Skill，不是独立剪辑软件。安装 Skill 不会自动安装转写模型、图片生成服务、剪映或视频渲染器。
 
-当前 Skill 版本：`1.0.0`。
+当前 Skill 版本：`2.0.0`。完整的首次安装、更新与跨 Agent 使用说明见 [安装与使用指南](INSTALL.md)。
 
 ## 你能得到什么
 
-- 先整理带时间码的原话和内容逻辑，再剪口误、重复与无意义停顿。
-- 根据每条视频的内容推荐三套视觉方向，先看真人合成关键帧，再确认动态样片。
+- 先整理带时间码的原话和内容逻辑，清理口误、重复、口水词与无意义停顿，保留原意和自然听感。
+- 先输出精简音频试听；确认后建立同源视频时间线，不单独导出粗剪 MP4。
+- 根据内容提供三套视觉风格，每套三种配色，一次选定完整组合后直接制作成片。
 - 统一人物处理、B-roll、字幕、贴纸与动效；每个阶段都有产物和验收标准。
 - 每次执行先检查工具与多模态能力；不同环境如需替代方案，明确说明差异和限制。
+- 默认仅音频、风格配色两次用户确认；动态检查保留为内部 QA，不默认制作封面。
 
 ## 安装到 Codex
 
@@ -26,14 +28,17 @@ skills/
     agents/openai.yaml
     references/
     scripts/
+    assets/
 ```
 
 将下面整段话发给 Codex：
 
 ```text
-请使用 $skill-installer 安装这个 GitHub 仓库中的 Skill：
+请使用 $skill-installer 安装或更新这个 GitHub 仓库中的 Skill：
 https://github.com/realpzyyy/ai-video-skills/tree/main/skills/talking-head-video-production
-如果已有同名 Skill，请先说明差异，不要直接覆盖。
+先核对远端版本和本机安装位置。如果有旧版，先完整备份到不会被扫描为 Skill 的目录。
+没有本地自定义改动时再更新；有自定义改动或发现比目标更新的版本时，先说明差异。
+保留整个 Skill 文件夹，完成后报告版本、来源提交和安装位置。
 ```
 
 该地址安装 `main` 分支中的当前版本。如果需要固定课程版本，可在安装时要求使用明确的提交编号。
@@ -42,8 +47,11 @@ https://github.com/realpzyyy/ai-video-skills/tree/main/skills/talking-head-video
 
 ```text
 使用 $talking-head-video-production 处理这条口播原片。
-先检查工具和多模态能力，整理逐字稿与内容逻辑，给我看粗剪。
-之后推荐三套风格，先做关键帧和动态样片供我确认。
+先检查工具和多模态能力，整理逐字稿与逻辑，输出精简音频让我试听确认。
+音频确认后建立同源视频时间线，不单独导出粗剪 MP4。
+展示 3 种视觉风格 × 每种 3 种配色的真实合成样张，让我选择完整组合。
+风格配色确认后，加入字幕、B-roll 和动效，完成必要检查并输出最终视频。
+不额外增加默认样片审批，不做封面。
 保留原声，不新增配音或数字人，不自动上传素材或使用付费服务。
 ```
 
@@ -51,7 +59,7 @@ https://github.com/realpzyyy/ai-video-skills/tree/main/skills/talking-head-video
 
 ## 无法访问 GitHub，或使用其他客户端
 
-可以由授课者提前分发完整 Skill 文件夹或 ZIP，再让客户端按照自己的 Skill 导入机制安装。必须保留 `SKILL.md`、`references`、`scripts` 与 `agents` 的相对路径。
+可以由授课者提前分发完整 Skill 文件夹或 ZIP，再让客户端按照自己的 Skill 导入机制安装。必须保留 `SKILL.md`、`references`、`scripts`、`assets` 与 `agents` 的相对路径。
 
 目前没有验证 WorkBuddy 等其他客户端的安装入口和完整执行兼容性，不承诺一个 GitHub 安装指令适用于所有客户端。先确认目标客户端支持本地 Skill、文件访问与实际执行工具；不支持自动导入时，可将该流程用作人工执行参考，但这不等于已安装。
 
@@ -68,12 +76,18 @@ https://github.com/realpzyyy/ai-video-skills/tree/main/skills/talking-head-video
 
 Skill 自带的本地检测脚本使用 Python 3 标准库。读取视频元数据需要可调用的 `ffprobe`。检测脚本不会安装依赖、下载模型或上传素材。模型、插件与云服务的收费和网络条件由所选工具决定；安装本 Skill 不代表后续制作全程免费。
 
+V2 新增的 `render_audio.py` 根据已审核选段表输出 PCM16 WAV 试听与时间映射，不自动转写或识别口水词。`build_style_board.py` 用原片真人帧生成离线 HTML 九格静态板，不负责最终视频渲染；内置三套 9:16 起步模板不等于适合所有题材。脚本用法见对应 SOP 和 `--help`。
+
+## 速度目标
+
+约一分钟常规口播、依赖模型已就绪、模板可复用、两次确认无需返工时，以累计主动处理 600 秒以内为优化目标。包含模型分析、工具等待、渲染和必要 QA；用户等待、冷启动与返工分别记录。完整端到端性能基准尚待验证，不承诺任意环境十分钟完成。详见 [速度预算](skills/talking-head-video-production/references/performance.md)。
+
 ## 本地验证
 
 在仓库根目录执行（Windows 可将 `python3` 换成可用的 Python 3 命令）：
 
 ```bash
-python3 -B skills/talking-head-video-production/scripts/test_probe_local.py
+python3 -B -m unittest discover -s skills/talking-head-video-production/scripts -p 'test_*.py'
 python3 -B skills/talking-head-video-production/scripts/probe_local.py
 ```
 
@@ -83,7 +97,7 @@ python3 -B skills/talking-head-video-production/scripts/probe_local.py
 python3 -B skills/talking-head-video-production/scripts/probe_local.py --media "/path/to/your-video.mp4"
 ```
 
-检测结果可能包含本机路径，请勿原样提交到公开仓库。单元测试验证检测脚本行为，不证明视频剪辑质量；跨模型、跨客户端完整试剪仍需单独验证。
+检测结果可能包含本机路径，请勿原样提交到公开仓库。V2 包含 24 项本地单元测试，验证预检、音频切段与静态风格板脚本行为，不证明视频剪辑质量；跨模型、跨客户端完整试剪仍需单独验证。
 
 ## 发布与维护
 
