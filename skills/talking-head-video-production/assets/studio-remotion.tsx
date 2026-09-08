@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Composition, registerRoot, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Composition, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Video} from '@remotion/media';
 import {sceneHTML, example, portraitRect} from './studio.mjs';
 import './studio.css';
@@ -20,5 +20,5 @@ export const StandardScene = ({config=example, demo=false, portrait='', source='
     </div>
   </AbsoluteFill>;
 };
-const Root=()=> <Composition id="StandardScene" component={StandardScene} width={720} height={1280} fps={30} durationInFrames={180} defaultProps={{config:example,demo:true}} calculateMetadata={({props})=>({durationInFrames:Math.ceil(props.config.duration_seconds*30)})}/>;
-registerRoot(Root);
+// Importing the reusable component never registers a second Remotion root.
+export const StudioRoot=()=> <Composition id="StandardScene" component={StandardScene} width={720} height={1280} fps={30} durationInFrames={180} defaultProps={{config:example,demo:true}} calculateMetadata={({props})=>({durationInFrames:Math.ceil(props.config.duration_seconds*30)})}/>;
