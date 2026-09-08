@@ -1,16 +1,147 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "styles": [
-    {"id":"tactile","name":"磨砂立体","motion":"纸页汇集、对象移位、柔和落定","palettes":[
-      {"id":"apricot","name":"奶油杏橙","background":"#F9D17E","text":"#513321","accent":"#983B26","surface":"#FFF4DE","muted":"#805B38","shadow":"#946132"},
-      {"id":"sky","name":"晴空蓝","background":"#C5E6F7","text":"#233C52","accent":"#2759A3","surface":"#F0F8FF","muted":"#526F84","shadow":"#65859E"},
-      {"id":"lilac","name":"香芋紫","background":"#DDD2F1","text":"#40324F","accent":"#775294","surface":"#F8F2FF","muted":"#725B84","shadow":"#917DAA"}]},
-    {"id":"editorial","name":"编辑杂志","motion":"标题划线、主次对照、分区揭示","palettes":[
-      {"id":"paper-red","name":"纸白朱红","background":"#F5F2EA","text":"#272824","accent":"#AB3F32","surface":"#FFFFFF","muted":"#68675F","shadow":"#B2ABA0"},
-      {"id":"mint","name":"薄荷深绿","background":"#DFF0E5","text":"#223C30","accent":"#256A4A","surface":"#F6FCF8","muted":"#52725F","shadow":"#9CBCAA"},
-      {"id":"lemon","name":"柠檬墨黑","background":"#F4EDAD","text":"#303026","accent":"#82530D","surface":"#FFFCE9","muted":"#756B3E","shadow":"#B5A668"}]},
-    {"id":"precision","name":"精密科技","motion":"节点连接、步骤推进、局部聚焦","palettes":[
-      {"id":"night-blue","name":"深夜电蓝","background":"#182637","text":"#EFF6FF","accent":"#89C8FF","surface":"#283B50","muted":"#B2C8DE","shadow":"#0B1420"},
-      {"id":"graphite-lime","name":"石墨青柠","background":"#202923","text":"#F0F6EC","accent":"#D4E988","surface":"#354337","muted":"#B8C6B1","shadow":"#0F1911"},
-      {"id":"ice","name":"冰白湖蓝","background":"#EAF3F4","text":"#203D43","accent":"#066879","surface":"#FFFFFF","muted":"#536F75","shadow":"#9FB9BC"}]}]
+    {
+      "id": "tactile",
+      "name": "磨砂工具箱",
+      "motion": "纸页汇集、对象移位、柔和落定",
+      "palettes": [
+        {
+          "id": "apricot",
+          "name": "奶油杏橙",
+          "background": "#F9D17E",
+          "text": "#513321",
+          "accent": "#983B26",
+          "surface": "#FFF3D8",
+          "muted": "#633F2B",
+          "shadow": "#BD8057"
+        },
+        {
+          "id": "sky",
+          "name": "晴空钴蓝",
+          "background": "#A3D3EE",
+          "text": "#1C3D65",
+          "accent": "#214EB9",
+          "surface": "#FFFDF4",
+          "muted": "#28486B",
+          "shadow": "#7397B6"
+        },
+        {
+          "id": "lilac",
+          "name": "香芋青柠",
+          "background": "#D9C9EF",
+          "text": "#46305F",
+          "accent": "#663CA1",
+          "surface": "#FFFAF2",
+          "muted": "#563A70",
+          "shadow": "#A08ABC"
+        }
+      ],
+      "layouts": [
+        "collect",
+        "compare",
+        "steps",
+        "aroll"
+      ]
+    },
+    {
+      "id": "editorial",
+      "name": "纸白知识杂志",
+      "motion": "标题划线、主次对照、分区揭示",
+      "palettes": [
+        {
+          "id": "apricot",
+          "name": "奶油杏橙",
+          "background": "#F9D17E",
+          "text": "#513321",
+          "accent": "#983B26",
+          "surface": "#FFF3D8",
+          "muted": "#633F2B",
+          "shadow": "#BD8057"
+        },
+        {
+          "id": "sky",
+          "name": "晴空钴蓝",
+          "background": "#A3D3EE",
+          "text": "#1C3D65",
+          "accent": "#214EB9",
+          "surface": "#FFFDF4",
+          "muted": "#28486B",
+          "shadow": "#7397B6"
+        },
+        {
+          "id": "lilac",
+          "name": "香芋青柠",
+          "background": "#D9C9EF",
+          "text": "#46305F",
+          "accent": "#663CA1",
+          "surface": "#FFFAF2",
+          "muted": "#563A70",
+          "shadow": "#A08ABC"
+        }
+      ],
+      "layouts": [
+        "collect",
+        "compare",
+        "steps",
+        "aroll"
+      ]
+    },
+    {
+      "id": "precision",
+      "name": "精密流程科技",
+      "motion": "节点连接、步骤推进、局部聚焦",
+      "palettes": [
+        {
+          "id": "apricot",
+          "name": "奶油杏橙",
+          "background": "#F9D17E",
+          "text": "#513321",
+          "accent": "#983B26",
+          "surface": "#FFF3D8",
+          "muted": "#633F2B",
+          "shadow": "#BD8057"
+        },
+        {
+          "id": "sky",
+          "name": "晴空钴蓝",
+          "background": "#A3D3EE",
+          "text": "#1C3D65",
+          "accent": "#214EB9",
+          "surface": "#FFFDF4",
+          "muted": "#28486B",
+          "shadow": "#7397B6"
+        },
+        {
+          "id": "lilac",
+          "name": "香芋青柠",
+          "background": "#D9C9EF",
+          "text": "#46305F",
+          "accent": "#663CA1",
+          "surface": "#FFFAF2",
+          "muted": "#563A70",
+          "shadow": "#A08ABC"
+        }
+      ],
+      "layouts": [
+        "collect",
+        "compare",
+        "steps",
+        "aroll"
+      ]
+    }
+  ],
+  "template_version": "2.1.0",
+  "canvas": {
+    "width": 720,
+    "height": 1280
+  },
+  "caption": {
+    "font_size": 38,
+    "min_font_size": 36,
+    "max_line_units": 14,
+    "max_lines": 2,
+    "side": 48,
+    "bottom": 118
+  }
 }
