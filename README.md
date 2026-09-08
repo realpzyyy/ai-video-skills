@@ -4,7 +4,19 @@
 
 这是一套供 AI 助手执行的 Skill，不是独立剪辑软件。安装 Skill 不会自动安装转写模型、图片生成服务、剪映或视频渲染器。
 
-当前 Skill 版本：`2.0.0`。完整的首次安装、更新与跨 Agent 使用说明见 [安装与使用指南](INSTALL.md)。
+当前 Skill 版本：`2.1.0`。完整的首次安装、更新与跨 Agent 使用说明见 [安装与使用指南](INSTALL.md)。
+
+## V2.1：直接带上三套实际视觉母版
+
+| 画风 | 奶油杏橙 | 晴空钴蓝 | 香芋青柠 |
+| --- | --- | --- | --- |
+| 磨砂工具箱 | A1 | A2 | A3 |
+| 纸白知识杂志 | B1 | B2 | B3 |
+| 精密流程科技 | C1 | C2 | C3 |
+
+保留原方案的构图、人物框、材质、字幕和对象动作，扩展到统一三色；不再只写「高级、杂志风」让 Agent 自由猜测。内置汇集、对照、步骤、真人承接四种版式。下载后直接打开 [离线模板画廊](skills/talking-head-video-production/assets/catalog.html)；GitHub 文件页本身不执行 HTML。
+
+预览与 Remotion 场景使用同源模板。未取得本次完整风格/配色选择必须暂停；批准检查器拒绝缺失/陈旧/错配的记录。它不是不可绕过的安全沙箱，仍要求执行 Agent 遵守流程。用法与字幕下限见 [标准模板说明](skills/talking-head-video-production/references/standard-templates.md)。公共包不含讲师真人音视频或私人逐字稿。
 
 ## 你能得到什么
 
@@ -76,7 +88,7 @@ https://github.com/realpzyyy/ai-video-skills/tree/main/skills/talking-head-video
 
 Skill 自带的本地检测脚本使用 Python 3 标准库。读取视频元数据需要可调用的 `ffprobe`。检测脚本不会安装依赖、下载模型或上传素材。模型、插件与云服务的收费和网络条件由所选工具决定；安装本 Skill 不代表后续制作全程免费。
 
-V2 新增的 `render_audio.py` 根据已审核选段表输出 PCM16 WAV 试听与时间映射，不自动转写或识别口水词。`build_style_board.py` 用原片真人帧生成离线 HTML 九格静态板，不负责最终视频渲染；内置三套 9:16 起步模板不等于适合所有题材。脚本用法见对应 SOP 和 `--help`。
+`render_audio.py` 根据已审核选段表输出 PCM16 WAV 试听与时间映射，不自动转写或识别口水词。`build_style_board.py` 使用 Python 3 + Node.js 生成同源九格 HTML，支持预览对象动画；`render_studio.mjs` 使用已有 Remotion 与 Chrome 导出单个场景。运行时不会随 Skill 安装，不自动下载。完整视频仍需宿主编排批准音频、字幕时间与视频时间线，不能把六秒示例当最终作品。不同画幅/品牌另行适配。
 
 ## 速度目标
 
@@ -88,6 +100,7 @@ V2 新增的 `render_audio.py` 根据已审核选段表输出 PCM16 WAV 试听�
 
 ```bash
 python3 -B -m unittest discover -s skills/talking-head-video-production/scripts -p 'test_*.py'
+node --test skills/talking-head-video-production/scripts/test_studio.mjs
 python3 -B skills/talking-head-video-production/scripts/probe_local.py
 ```
 
@@ -97,7 +110,7 @@ python3 -B skills/talking-head-video-production/scripts/probe_local.py
 python3 -B skills/talking-head-video-production/scripts/probe_local.py --media "/path/to/your-video.mp4"
 ```
 
-检测结果可能包含本机路径，请勿原样提交到公开仓库。V2 包含 24 项本地单元测试，验证预检、音频切段与静态风格板脚本行为，不证明视频剪辑质量；跨模型、跨客户端完整试剪仍需单独验证。
+检测结果可能包含本机路径，请勿原样提交到公开仓库。V2.1 包含 36 项 Python 与 7 项 Node 单元测试，验证预检、音频切段、风格板、共享场景和批准一致性。已在作者的 macOS / Remotion 环境检查九格并导出代表静帧和对象动画；不证明其他模型服从确认流程，跨客户端完整试剪与全流程十分钟基准仍待验证。
 
 ## 发布与维护
 

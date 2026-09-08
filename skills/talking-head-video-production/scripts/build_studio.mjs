@@ -1,0 +1,23 @@
+// Offline board generator; shared sceneHTML is also used by Remotion.
+import fs from 'node:fs';
+import {sceneHTML, example, validateScene} from '../assets/studio.mjs';
+const input=JSON.parse(fs.readFileSync(0,'utf8'));
+const presets=JSON.parse(fs.readFileSync(new URL('../assets/style-presets.json',import.meta.url),'utf8'));
+const css=fs.readFileSync(new URL('../assets/studio.css',import.meta.url),'utf8');
+const source=fs.readFileSync(new URL('../assets/studio.mjs',import.meta.url),'utf8').replace(/^export /gm,'');
+const config={...example,...input.config};
+const options={portrait:input.portrait||'',demo:!!input.demo};
+const cells=presets.styles.flatMap((s,i)=>s.palettes.map((p,j)=>({choice:String.fromCharCode(65+i)+(j+1),name:s.name+' / '+p.name,config:{...config,style_id:s.id,palette_id:p.id}})));
+cells.forEach(c=>validateScene(c.config));
+const safe=x=>JSON.stringify(x).replace(/</g,'\\u003c');
+process.stdout.write(`<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>口播标准模板 V2.1 · 3×3</title><style>${css}
+body{margin:0;background:#edeae4;font-family:"Heiti SC",sans-serif;color:#282623;padding:24px}header{max-width:1140px;margin:0 auto 20px}h1{font-size:28px}header p{line-height:1.6}button,select,input{font:inherit}button,select{padding:8px 12px;margin:4px;border:1px solid #bbb;border-radius:6px;background:#fff;cursor:pointer}.board{display:grid;grid-template-columns:repeat(3,minmax(0,360px));gap:24px;max-width:1128px;margin:auto}.option{min-width:0}.name{font-size:16px;margin:10px 0}.shot{position:relative;width:100%;aspect-ratio:9/16;overflow:hidden;cursor:zoom-in}.shot>.canvas{transform:scale(var(--preview-scale,.5));transform-origin:0 0}.option p{font-size:14px;line-height:1.5}.tools{position:sticky;top:0;background:#edeae4f5;z-index:10;padding:8px}dialog{border:0;padding:12px;background:#edeae4;max-height:95vh;overflow:auto}dialog .shot{width:360px}dialog::backdrop{background:#000a}@media(max-width:760px){.board{grid-template-columns:1fr;max-width:360px}}
+</style><header><h1>三种画风 × 三种配色</h1><p>${input.demo?'公开模板示意，人物为通用绘图；不是对任何项目的风格批准。':'本次原片代表帧。请查看完整画面和字幕后，回复一个编号；展示候选不等于已经选择。'}</p><p>行：磨砂工具箱 / 纸白知识杂志 / 精密流程科技。列：奶油杏橙 / 晴空钴蓝 / 香芋青柠。</p><div class="tools"><select id="layout" aria-label="版式"><option value="collect">知识汇集</option><option value="compare">前后对照</option><option value="steps">步骤推进</option><option value="aroll">真人承接</option></select><button id="play">播放对象动画</button><input aria-label="动画时间" id="time" type="range" min="0" max="5.8" step="0.05" value="3"><span id="clock">3.00s</span></div></header><main class="board">${cells.map(c=>`<article class="option" data-choice="${c.choice}" data-style="${c.config.style_id}" data-palette="${c.config.palette_id}"><h2 class="name">${c.choice} · ${c.name}</h2><div class="shot">${sceneHTML(c.config,3,options)}</div><button class="choose">查看 ${c.choice}</button></article>`).join('')}</main><dialog><button id="close">关闭</button><h2 id="detail-name"></h2><div class="shot" id="detail"></div><p>喜欢此组合，请在对话中回复完整编号。此按钮不保存批准。</p></dialog><script>${source}
+const cells=${safe(cells)},options=${safe(options)};let playing=false,t=3,last=0,detail=-1;
+const shots=[...document.querySelectorAll('article .shot')],slider=document.querySelector('#time'),layout=document.querySelector('#layout');
+function draw(){cells.forEach((c,i)=>{c.config.layout=layout.value;shots[i].innerHTML=sceneHTML(c.config,t,options)});if(detail>=0)document.querySelector('#detail').innerHTML=sceneHTML(cells[detail].config,t,options);document.querySelector('#clock').textContent=t.toFixed(2)+'s';slider.value=t;resize()}
+function resize(){document.querySelectorAll('.shot').forEach(s=>s.style.setProperty('--preview-scale',s.clientWidth/720))}
+document.querySelector('#play').onclick=()=>{playing=!playing;last=0;document.querySelector('#play').textContent=playing?'暂停':'播放对象动画'};slider.oninput=()=>{playing=false;t=Number(slider.value);draw()};layout.onchange=draw;
+document.querySelectorAll('article').forEach((el,i)=>{const show=()=>{detail=i;document.querySelector('#detail-name').textContent=cells[i].choice+' · '+cells[i].name;document.querySelector('dialog').showModal();draw()};el.querySelector('.choose').onclick=show;el.querySelector('.shot').onclick=show});document.querySelector('#close').onclick=()=>{document.querySelector('dialog').close();detail=-1};
+function tick(now){if(playing){if(last)t=(t+(now-last)/1000)%5.8;draw()}last=now;requestAnimationFrame(tick)}new ResizeObserver(resize).observe(document.querySelector('main'));resize();requestAnimationFrame(tick);
+</script></html>`);

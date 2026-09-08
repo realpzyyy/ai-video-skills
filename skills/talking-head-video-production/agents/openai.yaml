@@ -1,4 +1,4 @@
 interface:
   display_name: "AI 口播精剪工作流"
-  short_description: "先精简原声并试听，再一次确认三种风格各三套配色，最后合成字幕与B-roll"
-  default_prompt: "使用 $talking-head-video-production 剪辑这条口播：先精简逐字稿和原声，只输出音频让我确认；再展示3种视觉风格各3种配色供我选择，确认后直接合成最终视频，不默认制作封面。"
+  short_description: "音频先试听，内置三套视觉母版与三配色；选定后同源渲染字幕、对象动画和B-roll"
+  default_prompt: "使用 $talking-head-video-production 剪辑这条口播：先精简原声并暂停让我试听；再使用包内三套母版和三配色生成本次九格，暂停让我选定完整组合。不得先烧制再问风格。确认后复用母版字幕与对象动画，检查通过后输出成片，不做封面。"
