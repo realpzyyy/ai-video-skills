@@ -10,8 +10,15 @@ import {example,validateScene,STYLE_IDS,PALETTE_IDS,LAYOUT_IDS} from '../assets/
 const base=path.dirname(fileURLToPath(import.meta.url));
 const args=process.argv.slice(2),flags={};
 for(let i=0;i<args.length;i++){const k=args[i];if(k==='--demo'||k==='--still')flags[k]=true;else if(k.startsWith('--')&&args[i+1])flags[k]=args[++i];else throw Error('Invalid argument '+k)}
-const known=['--demo','--still','--runtime','--browser','--output','--project','--scene','--python','--style','--palette','--layout','--frame'];
+const known=['--demo','--still','--runtime','--browser','--output','--project','--scene','--python','--style','--palette','--layout','--frame','--runtime-report'];
 if(Object.keys(flags).some(k=>!known.includes(k)))throw Error('Unknown flag');
+if(flags['--runtime-report']){
+  const ready=JSON.parse(fs.readFileSync(flags['--runtime-report'],'utf8'));
+  if(ready.schema_version!==1||ready.status!=='dependencies_ready')throw Error('Runtime report is not verified; run setup_runtime.py --verify');
+  flags['--runtime']??=ready.runtime?.path;
+  flags['--browser']??=ready.browser;
+  flags['--python']??=ready.commands?.python?.path;
+}
 if(!flags['--runtime']||!flags['--output'])throw Error('Need --runtime existing-project-dir --output new-file.mp4|png');
 if(!flags['--browser']||!fs.existsSync(flags['--browser']))throw Error('Need --browser path-to-existing-Chrome-executable; automatic browser downloads are disabled');
 let config,props;
