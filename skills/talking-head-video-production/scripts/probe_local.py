@@ -9,6 +9,7 @@ import platform
 import shutil
 import subprocess
 import sys
+from setup_runtime import cache_root
 
 
 COMMANDS = {
@@ -40,8 +41,8 @@ def run_command(argv, timeout=12):
                 "error": type(exc).__name__}
 
 
-def inventory_command(name, version_args):
-    executable = shutil.which(name)
+def inventory_command(name, version_args, explicit=None):
+    executable = explicit or shutil.which(name)
     item = {"name": name, "path": executable, "detected": bool(executable),
             "version_check": "not_run", "version_line": None,
             "task_capability": "untested"}
@@ -102,14 +103,21 @@ def inspect_media(media, ffprobe_path):
     }
 
 
-def build_report(media=None):
-    commands = {name: inventory_command(name, args) for name, args in COMMANDS.items()}
+def build_report(media=None, runtime_report=None):
+    saved = {}
+    if runtime_report:
+        saved = json.loads(Path(runtime_report).read_text(encoding='utf-8'))
+        if saved.get('schema_version') != 1 or not isinstance(saved.get('commands'), dict):
+            raise ValueError('Invalid runtime report')
+    commands = {name: inventory_command(name, args, (saved.get('commands', {}).get(name) or {}).get('path'))
+                for name, args in COMMANDS.items()}
     return {
         "schema_version": "1.0.0", "kind": "local_environment_probe",
         "checked_at": datetime.now(timezone.utc).isoformat(),
         "environment": {"system": platform.system(), "release": platform.release(),
                         "machine": platform.machine(), "python": platform.python_version()},
         "commands": commands,
+        "runtime_report": str(runtime_report) if runtime_report else None,
         "media": inspect_media(media, commands["ffprobe"]["path"]),
         "agent_capabilities": {name: {"status": "untested",
             "reason": "requires_current_agent_or_provider_evidence"}
@@ -137,11 +145,15 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--media", help="An explicitly provided local video file")
     parser.add_argument("--output", help="New JSON report path; existing files are refused")
+    parser.add_argument("--runtime-report", help="Setup report with actual executable paths; defaults to the local managed report when present")
     args = parser.parse_args(argv)
     try:
-        report = build_report(args.media)
+        saved = args.runtime_report or (cache_root() / 'runtime-report.json')
+        if args.runtime_report and not Path(saved).is_file():
+            raise ValueError('Explicit runtime report does not exist')
+        report = build_report(args.media, saved if Path(saved).is_file() else None)
         emit_report(report, args.output)
-    except OSError as exc:
+    except (OSError, ValueError) as exc:
         print(f"Cannot read input or create report: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 2
     return 0 if report["media"]["status"] in ("not_requested", "metadata_verified") else 2
