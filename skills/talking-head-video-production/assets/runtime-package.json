@@ -1,0 +1,14 @@
+{
+  "name": "talking-head-video-runtime",
+  "version": "2.2.0",
+  "private": true,
+  "description": "Isolated, optional runtime for the talking-head-video-production Skill",
+  "dependencies": {
+    "@remotion/bundler": "4.0.509",
+    "@remotion/media": "4.0.509",
+    "@remotion/renderer": "4.0.509",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.509"
+  }
+}
