@@ -45,7 +45,7 @@ node scripts/render_studio.mjs --runtime /existing/remotion-project --browser /p
 
 加 --still 可导出 PNG，--frame 指定帧。真实单场景导出用 --project 与 --scene 代替 --demo，scene.json 顶层含配置和 portrait_data_url（本次授权原片的本地 PNG/JPEG）；缺确认直接报错。--demo 不接受任何私有配置/素材，仅能使用包内样例。
 
-必须预检 Node、可用 Python、React、remotion、@remotion/media、@remotion/bundler、@remotion/renderer 和现有 Chrome；不自动安装/下载。需要新依赖时先征求对应授权。临时构建目录保留在系统临时区，包含本次素材时同样不得公开上传。
+必须预检 Node、可用 Python、React、remotion、@remotion/media、@remotion/bundler、@remotion/renderer 和现有 Chrome。用户已授权补齐运行依赖时先按 [环境初始化](setup.md) 自动安装缺项并验证；未授权才询问，不在渲染中隐式下载。--runtime-report 可传入已验证的本机安装报告，复用实际运行目录和浏览器路径。临时构建目录保留在系统临时区，包含本次素材时同样不得公开上传。
 
 ## 接到整条视频，不要把六秒样例重复铺满
 
