@@ -2,9 +2,15 @@
 
 把一条真人口播原片，按「逐字稿与精简 → 音频试听确认 → 3×3 风格配色确认 → 最终成片」的流程制作成完整视频。
 
-这是一套供 AI 助手执行的 Skill，不是独立剪辑软件。安装 Skill 不会自动安装转写模型、图片生成服务、剪映或视频渲染器。
+这是一套供 AI 助手执行的 Skill，不是独立剪辑软件。V2.2 支持在安装阶段检测、复用并按授权补齐 FFmpeg/FFprobe 与固定版本 Remotion；不自动安装转写模型、图片生成服务或剪映。
 
-当前 Skill 版本：`2.1.0`。完整的首次安装、更新与跨 Agent 使用说明见 [安装与使用指南](INSTALL.md)。
+当前 Skill 版本：`2.2.0`。完整的首次安装、更新与跨 Agent 使用说明见 [安装与使用指南](INSTALL.md)。
+
+## V2.2：安装时把剪辑环境准备好
+
+新增 scripts/setup_runtime.py：先查现有工具与实际路径，缺项才安装，最后用合成音视频和模板静帧验证。已有依赖不重装，Remotion 使用专属缓存与锁定依赖，不改用户项目或全局 npm；FFmpeg 复用受支持的现有包管理器。缺基础环境、权限或网络时明确报告，不虚报就绪。详见 [安装流程与平台边界](skills/talking-head-video-production/references/setup.md)。
+
+**仅导入 Skill 文件不保证会运行初始化**，请使用下面含「补齐必要依赖」的安装提示词。首次下载属于课前冷启动；三套母版、两次用户确认和成片质量标准不变。
 
 ## V2.1：直接带上三套实际视觉母版
 
@@ -51,6 +57,10 @@ https://github.com/realpzyyy/ai-video-skills/tree/main/skills/talking-head-video
 先核对远端版本和本机安装位置。如果有旧版，先完整备份到不会被扫描为 Skill 的目录。
 没有本地自定义改动时再更新；有自定义改动或发现比目标更新的版本时，先说明差异。
 保留整个 Skill 文件夹，完成后报告版本、来源提交和安装位置。
+我同意安装此 Skill 必需的 FFmpeg/FFprobe 与固定版本 React/Remotion 运行依赖。
+请读取 references/setup.md，发现本机/宿主的 Python、Node、npm 和浏览器实际路径，执行 scripts/setup_runtime.py --install。
+已有依赖复用，缺失才安装；完成合成测试，报告 runtime-report.json 位置与就绪状态，不要只列缺失项。
+不授权管理员提权、付费、大模型下载或上传我的素材；缺基础环境或受权限/网络限制时说明具体原因。
 ```
 
 该地址安装 `main` 分支中的当前版本。如果需要固定课程版本，可在安装时要求使用明确的提交编号。
@@ -88,7 +98,7 @@ https://github.com/realpzyyy/ai-video-skills/tree/main/skills/talking-head-video
 
 Skill 自带的本地检测脚本使用 Python 3 标准库。读取视频元数据需要可调用的 `ffprobe`。检测脚本不会安装依赖、下载模型或上传素材。模型、插件与云服务的收费和网络条件由所选工具决定；安装本 Skill 不代表后续制作全程免费。
 
-`render_audio.py` 根据已审核选段表输出 PCM16 WAV 试听与时间映射，不自动转写或识别口水词。`build_style_board.py` 使用 Python 3 + Node.js 生成同源九格 HTML，支持预览对象动画；`render_studio.mjs` 使用已有 Remotion 与 Chrome 导出单个场景。运行时不会随 Skill 安装，不自动下载。完整视频仍需宿主编排批准音频、字幕时间与视频时间线，不能把六秒示例当最终作品。不同画幅/品牌另行适配。
+`render_audio.py` 根据已审核选段表输出 PCM16 WAV 试听与时间映射，不自动转写或识别口水词。`build_style_board.py` 使用 Python 3 + Node.js 生成同源九格 HTML，支持预览对象动画；`render_studio.mjs` 使用已就绪的 Remotion 与 Chrome 导出单个场景。运行时不打包在 Skill 内；用户授权时由 setup_runtime.py 安装缺项并验证，不在渲染时隐式下载。完整视频仍需宿主编排批准音频、字幕时间与视频时间线，不能把六秒示例当最终作品。不同画幅/品牌另行适配。
 
 ## 速度目标
 
@@ -110,7 +120,7 @@ python3 -B skills/talking-head-video-production/scripts/probe_local.py
 python3 -B skills/talking-head-video-production/scripts/probe_local.py --media "/path/to/your-video.mp4"
 ```
 
-检测结果可能包含本机路径，请勿原样提交到公开仓库。V2.1 包含 36 项 Python 与 7 项 Node 单元测试，验证预检、音频切段、风格板、共享场景和批准一致性。已在作者的 macOS / Remotion 环境检查九格并导出代表静帧和对象动画；不证明其他模型服从确认流程，跨客户端完整试剪与全流程十分钟基准仍待验证。
+检测结果可能包含本机路径，请勿原样提交到公开仓库。单元测试覆盖预检、安装计划与复用、音频切段、风格板、共享场景和批准一致性。已在作者的 macOS / Remotion 环境检查九格并导出代表静帧和对象动画；Windows/Linux 安装分支尚未实机验收，跨客户端完整试剪与全流程十分钟基准仍待验证。
 
 ## 发布与维护
 
